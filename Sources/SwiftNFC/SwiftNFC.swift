@@ -10,12 +10,13 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     public var raw = "Raw Data available after scan."
 
     public var session: NFCNDEFReaderSession?
-    
-    public func read() {
+    public var onMessage: ((String) -> Void)?
+    public func read(onMessage: @escaping (String) -> Void) {
         guard NFCNDEFReaderSession.readingAvailable else {
             print("Error")
             return
         }
+        self.onMessage = onMessage
         session = NFCNDEFReaderSession(delegate: self, queue: nil, invalidateAfterFirstRead: true)
         session?.alertMessage = self.startAlert
         session?.begin()
@@ -28,7 +29,9 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                     String(decoding: $0.payload, as: UTF8.self)
                 }.joined(separator: "\n")
             }.joined(separator: " ")
-            
+            if self.onMessage != nil {
+                self.onMessage!(self.msg)
+            }
             self.raw = messages.map {
                 $0.records.map {
                     "\($0.typeNameFormat) \(String(decoding:$0.type, as: UTF8.self)) \(String(decoding:$0.identifier, as: UTF8.self)) \(String(decoding: $0.payload, as: UTF8.self))"
