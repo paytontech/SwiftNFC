@@ -121,7 +121,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                     let message = NFCNDEFMessage(records: [payload].compactMap({ $0 }))
                     tag.writeNDEF(message, completionHandler: { (error: Error?) in
                         if nil != error {
-                            session.alertMessage = "Write to tag fail: \(error!)"
+                            print(error)
                         } else {
                             session.alertMessage = self.endAlert != "" ? self.endAlert : "Write \(self.msg) to tag successful."
                         }
