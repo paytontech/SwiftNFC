@@ -6,12 +6,12 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     
     public var startAlert = "Hold your iPhone near the tag."
     public var endAlert = ""
-    public var msg = "Scan to read or Edit here to write..."
+    public var msg: Data = "Scan to read or Edit here to write...".data(using: .utf8)!
     public var raw = "Raw Data available after scan."
 
     public var session: NFCNDEFReaderSession?
-    public var onMessage: ((String) -> Void)?
-    public func read(onMessage: @escaping (String) -> Void) {
+    public var onMessage: ((Data) -> Void)?
+    public func read(onMessage: @escaping (Data) -> Void) {
         guard NFCNDEFReaderSession.readingAvailable else {
             print("Error")
             return
@@ -24,11 +24,18 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     
     public func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
         DispatchQueue.main.async {
-            self.msg = messages.map {
-                $0.records.map {
-                    String(decoding: $0.payload, as: UTF8.self)
-                }.joined(separator: "\n")
-            }.joined(separator: " ")
+//            self.msg = messages.map {
+//                $0.records.map {
+//                    String(decoding: $0.payload, as: UTF8.self)
+//                }.joined(separator: "\n")
+//            }.joined(separator: " ")
+            for message in messages {
+                for payload in message.records {
+                    if payload.typeNameFormat == .media {
+                        self.msg = payload.payload
+                    }
+                }
+            }
             if self.onMessage != nil {
                 self.onMessage!(self.msg)
             }
