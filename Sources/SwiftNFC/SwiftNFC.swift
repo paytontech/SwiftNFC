@@ -57,7 +57,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     public var startAlert = "Hold your iPhone near the tag."
     public var endAlert = ""
     public var msg = ""
-    public var type = "FUCK"
+    public var type = "T"
     
     public var session: NFCNDEFReaderSession?
     
