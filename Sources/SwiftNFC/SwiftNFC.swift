@@ -57,7 +57,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     public var startAlert = "Hold your iPhone near the tag."
     public var endAlert = ""
     public var msg = ""
-    public var type = "T"
+    public var type = "FUCK"
     
     public var session: NFCNDEFReaderSession?
     
@@ -116,7 +116,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                             payload: Data("\(self.msg)".utf8)
                         )
                     } else {
-                        payload = NFCNDEFPayload.wellKnownTypeURIPayload(string: "\(self.msg)")
+                        payload = NFCNDEFPayload.wellKnownTypeTextPayload(string: "\(self.msg)", locale: .current)
                     }
                     let message = NFCNDEFMessage(records: [payload].compactMap({ $0 }))
                     tag.writeNDEF(message, completionHandler: { (error: Error?) in
