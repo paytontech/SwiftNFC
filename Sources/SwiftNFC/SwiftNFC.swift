@@ -79,18 +79,10 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     }
     
     public func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
+        print("found NDEF")
     }
 
     public func readerSession(_ session: NFCNDEFReaderSession, didDetect tags: [NFCNDEFTag]) {
-        if tags.count > 1 {
-            let retryInterval = DispatchTimeInterval.milliseconds(500)
-            session.alertMessage = "Detected more than 1 tag. Please try again."
-            DispatchQueue.global().asyncAfter(deadline: .now() + retryInterval, execute: {
-                session.restartPolling()
-            })
-            return
-        }
-        
         let tag = tags.first!
         session.connect(to: tag, completionHandler: { (error: Error?) in
             if nil != error {
