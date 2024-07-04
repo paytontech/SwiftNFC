@@ -124,7 +124,8 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                             if let errorCode = (error! as NSError).userInfo[NFCISO15693TagResponseErrorKey] as? NSNumber {
                                 print(errorCode)
                             }
-                            session.alertMessage = "failed :("
+                            session.alertMessage = "failed :( try again"
+                            session.invalidate(errorMessage: "failed :( try again")
                         } else {
                             session.alertMessage = self.endAlert != "" ? self.endAlert : "Write \(self.msg) to tag successful."
                         }
